@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Paster</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="search-bar-container">
+                <input type="text" id="searchInput" placeholder="Search snippets..." autocomplete="off">
+            </div>
+            
+            <form id="quickAddForm" class="quick-add-bar">
+                <input type="text" id="quickLabel" placeholder="Label (e.g. Work Email)" required>
+                <input type="text" id="quickValue" placeholder="Value (e.g. name@company.com)" required>
+                <button type="submit" class="btn-primary-icon" title="Add Snippet">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14m-7-7h14"/>
+                    </svg>
+                </button>
+            </form>
+        </header>
+
+        <main>
+            <div id="gridContainer" class="grid-container">
+                <!-- Cards injected here -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">Copied to clipboard!</div>
+
+    <!-- Delete Modal -->
+    <div id="deleteModal" class="modal-overlay">
+        <div class="modal">
+            <h3>Delete Snippet?</h3>
+            <p>This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="cancelDeleteBtn" class="btn-secondary">Cancel</button>
+                <button id="confirmDeleteBtn" class="btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="options.js"></script>
+</body>
+</html>

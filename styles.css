@@ -1,0 +1,350 @@
+:root {
+    --bg-color: #000000;
+    --card-bg: #111111;
+    --card-border: #333333;
+    --card-hover-border: #888888;
+    --text-main: #e5e5e5;
+    --text-muted: #888888;
+    --primary: #ffffff; /* Stark white for contrast */
+    --primary-hover: #cccccc;
+    --danger: #ff4444;
+    --font-ui: 'Job', monospace; /* Fallback to monospace for terminal feel */
+    --font-code: 'JetBrains Mono', monospace;
+}
+
+body {
+    background-color: var(--bg-color);
+    background-image: 
+        linear-gradient(rgba(50, 50, 50, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(50, 50, 50, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px; /* Subtle grid */
+    color: var(--text-main);
+    font-family: var(--font-code); /* Default to mono */
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1;
+}
+
+/* Header */
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 10;
+}
+
+.search-bar-container {
+    width: 100%;
+    max-width: 500px;
+}
+
+#searchInput {
+    width: 100%;
+    background: #000000;
+    border: 1px solid var(--card-border);
+    border-radius: 4px; /* Sharper corners */
+    padding: 0.8rem 1.5rem;
+    color: var(--text-main);
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    outline: none;
+    text-align: center;
+}
+
+#searchInput:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+/* Quick Add Bar */
+.quick-add-bar {
+    display: flex;
+    gap: 0;
+    width: 100%;
+    max-width: 800px;
+    background: var(--card-bg);
+    padding: 0;
+    border-radius: 4px;
+    border: 1px solid var(--card-border);
+    box-shadow: none;
+    overflow: hidden;
+}
+
+.quick-add-bar input {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    padding: 0.8rem 1rem;
+    border-radius: 0;
+    font-family: var(--font-code);
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.quick-add-bar input:focus {
+    background: #1a1a1a;
+}
+
+#quickLabel {
+    flex: 1;
+    border-right: 1px solid var(--card-border);
+}
+
+#quickValue {
+    flex: 2;
+    border-right: 1px solid var(--card-border);
+}
+
+.btn-primary-icon {
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: none;
+    border-radius: 0;
+    width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-primary-icon:hover {
+    background: var(--primary);
+    color: #000000; /* Invert on hover */
+}
+
+/* Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+/* Cards */
+.card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 1rem;
+    transition: all 0.1s;
+    cursor: default;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 120px;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary);
+}
+
+.card.editing {
+    cursor: default;
+    border-color: var(--primary);
+    background: #000000;
+}
+
+.card-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.card-value {
+    font-family: var(--font-code);
+    font-size: 1rem;
+    color: var(--text-main);
+    word-break: break-all;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Card Inputs (Editing State) */
+.card-input-label {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-main);
+    width: 100%;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-family: var(--font-code);
+}
+
+.card-input-value {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 2px;
+    color: var(--text-main);
+    width: 100%;
+    min-height: 60px;
+    padding: 0.5rem;
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    resize: none;
+}
+
+.card-input-label:focus, .card-input-value:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.card-actions {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 1rem;
+}
+
+.btn-card-action {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 0.3rem 0.6rem;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-family: var(--font-code);
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.btn-card-action:hover {
+    border-color: var(--text-main);
+    color: var(--text-main);
+}
+
+.btn-card-primary {
+    background: var(--text-main);
+    color: #000000;
+    border-color: var(--text-main);
+}
+.btn-card-primary:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+}
+
+.btn-card-danger:hover {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000000;
+    color: var(--text-main);
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--primary);
+    border-radius: 4px;
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 2000;
+}
+
+.toast.hidden {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+    pointer-events: none;
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.1s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: #111111;
+    border: 1px solid var(--card-border);
+    padding: 2rem;
+    border-radius: 4px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal h3 {
+    margin-top: 0;
+    color: var(--text-main);
+    font-family: var(--font-code);
+}
+.modal p {
+    color: var(--text-muted);
+    font-family: var(--font-code);
+    font-size: 0.9rem;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+.btn-danger {
+    background: var(--danger);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 2px;
+    font-family: var(--font-code);
+    font-weight: 600;
+    cursor: pointer;
+}
+.btn-secondary {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--card-border);
+    padding: 0.5rem 1rem;
+    border-radius: 2px;
+    font-family: var(--font-code);
+    cursor: pointer;
+}
+.btn-secondary:hover {
+    color: var(--text-main);
+    border-color: var(--text-main);
+}
