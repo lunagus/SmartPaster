@@ -2,13 +2,10 @@
 
 Smart Paster is a privacy-focused browser extension designed to streamline data entry by managing and pasting frequently used text snippets. Built for Chromium-based browsers (Chrome, Edge, Brave) and Firefox, it operates entirely offline using local storage.
 
-<<<<<<< HEAD
 ## WHY?
 
 I simply got tired of typing the same things over and over again. I wanted a way to instantly access and paste my frequently used text—like emails, addresses, or code snippets—without having to hunt for them in a separate document every time. It’s designed to replace the messy 'Untitled.txt' file on your desktop with something faster, private and cleaner.
 
-=======
->>>>>>> f164b4d (Initial commit: Smart Paster Extension v1.0)
 ## ✨ Features
 
 - **Context Menu Integration**: Right-click on any input field to access and paste your saved snippets immediately.
