@@ -7,6 +7,7 @@ let deleteId = null;
 // DOM Elements (Initialized in init)
 let gridContainer, searchInput, quickAddForm, quickLabel, quickValue;
 let toast, deleteModal, confirmDeleteBtn, cancelDeleteBtn;
+let snippetCount, exportBtn, importBtn, importFile;
 
 function init() {
     // Initialize References
@@ -19,6 +20,10 @@ function init() {
     deleteModal = document.getElementById('deleteModal');
     confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    snippetCount = document.getElementById('snippetCount');
+    exportBtn = document.getElementById('exportBtn');
+    importBtn = document.getElementById('importBtn');
+    importFile = document.getElementById('importFile');
 
     loadSnippets();
     setupEventListeners();
@@ -59,17 +64,38 @@ function setupEventListeners() {
             if (e.target === deleteModal) closeDeleteModal();
         });
     }
+
+    // Escape key closes the delete modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeDeleteModal();
+    });
+
+    // Export / Import
+    if (exportBtn) exportBtn.addEventListener('click', exportSnippets);
+    if (importBtn) importBtn.addEventListener('click', () => importFile && importFile.click());
+    if (importFile) importFile.addEventListener('change', handleImport);
 }
 
 async function loadSnippets() {
     const data = await chrome.storage.local.get(['snippets']);
     snippets = data.snippets || [];
     renderGrid(snippets);
+    updateSnippetCount(snippets.length, snippets.length);
 }
 
 function renderGrid(items) {
     if (!gridContainer) return;
     gridContainer.innerHTML = '';
+
+    if (items.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = snippets.length === 0
+            ? 'No snippets yet. Use the bar above to add one.'
+            : 'No snippets match your search.';
+        gridContainer.appendChild(empty);
+        return;
+    }
     
     items.forEach(snippet => {
         const card = createCardElement(snippet);
@@ -137,7 +163,8 @@ function enterEditMode(cardElement, snippetOrNull = null) {
             await updateSnippet(snippetOrNull.id, label, value);
         }
         
-        loadSnippets(); 
+        loadSnippets();
+        showToast(isNew ? "Snippet created!" : "Snippet updated!");
     });
 
     // Cancel Handler
@@ -152,19 +179,9 @@ function enterEditMode(cardElement, snippetOrNull = null) {
     });
 }
 
-function createInlineCard() {
-    if (!gridContainer) return;
-    if (gridContainer.querySelector('.card.editing')) return;
-
-    const div = document.createElement('div');
-    div.className = 'card editing';
-    gridContainer.prepend(div);
-    enterEditMode(div, null);
-}
-
 async function addSnippet(label, value) {
     snippets.unshift({ 
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         label, 
         value
     });
@@ -195,6 +212,7 @@ async function performDelete() {
         await chrome.storage.local.set({ snippets });
         loadSnippets();
         closeDeleteModal();
+        showToast("Snippet deleted.");
     }
 }
 
@@ -205,7 +223,76 @@ function filterSnippets(query) {
         s.value.toLowerCase().includes(lowerQuery)
     );
     renderGrid(filtered);
+    updateSnippetCount(filtered.length, snippets.length);
 }
+
+function updateSnippetCount(shown, total) {
+    if (!snippetCount) return;
+    if (total === 0) {
+        snippetCount.textContent = '';
+    } else if (shown === total) {
+        snippetCount.textContent = `${total} snippet${total === 1 ? '' : 's'}`;
+    } else {
+        snippetCount.textContent = `${shown} of ${total} snippet${total === 1 ? '' : 's'}`;
+    }
+}
+
+// --- Export / Import ---
+
+function exportSnippets() {
+    if (snippets.length === 0) {
+        showToast("Nothing to export.");
+        return;
+    }
+    const blob = new Blob([JSON.stringify(snippets, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `smart-paster-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("Snippets exported!");
+}
+
+function handleImport(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        try {
+            const imported = JSON.parse(event.target.result);
+            if (!Array.isArray(imported)) throw new Error("Invalid format");
+
+            // Validate and assign fresh IDs to avoid collisions
+            const newSnippets = imported
+                .filter(s => s.label && s.value)
+                .map(s => ({
+                    id: crypto.randomUUID(),
+                    label: String(s.label),
+                    value: String(s.value)
+                }));
+
+            if (newSnippets.length === 0) {
+                showToast("No valid snippets found in file.");
+                return;
+            }
+
+            snippets = [...newSnippets, ...snippets];
+            await chrome.storage.local.set({ snippets });
+            loadSnippets();
+            showToast(`Imported ${newSnippets.length} snippet${newSnippets.length === 1 ? '' : 's'}!`);
+        } catch (err) {
+            showToast("Import failed: invalid JSON file.");
+        }
+    };
+    reader.readAsText(file);
+
+    // Reset file input so the same file can be re-imported
+    e.target.value = '';
+}
+
+// --- Utilities ---
 
 function showToast(message = "Done!") {
     if (!toast) return;

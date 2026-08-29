@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Paster</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -23,6 +22,15 @@
                     </svg>
                 </button>
             </form>
+
+            <div class="utility-bar">
+                <span id="snippetCount" class="snippet-count"></span>
+                <div class="utility-actions">
+                    <button id="exportBtn" class="btn-utility" title="Export snippets as JSON">Export</button>
+                    <button id="importBtn" class="btn-utility" title="Import snippets from JSON">Import</button>
+                    <input type="file" id="importFile" accept=".json" hidden>
+                </div>
+            </div>
         </header>
 
         <main>
