@@ -56,7 +56,6 @@ Since this extension is designed for private use or development, it is loaded ma
 - [ ] **Categories/Tags**: Organize snippets into folders or groups (e.g., "Work", "Personal").
 - [ ] **Sorting Options**: Sort and pin snippets by Name, Date Added, Category, or Usage Frequency.
 - [ ] **Custom Icons**: Assign specific icons to snippets for faster visual recognition and modify existing ones.
-- [x] **Backup & Restore**: Export your collection to JSON and import it on other devices.
 - [ ] **Settings Page**: Customize the extension behavior (e.g., default copy behavior, theme toggles).
 - [ ] **Keyboard Shortcuts**: Hotkeys to quickly open the dashboard or paste specific snippets.
 
